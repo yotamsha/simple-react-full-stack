@@ -1,23 +1,70 @@
-import React, { Component } from 'react';
-import './app.css';
-import ReactImage from './react.png';
 
-export default class App extends Component {
-  state = { username: null };
+import React from 'react';
+import './App.css';
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLogginActive: true
+    };
+  }
 
   componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+    // Add .right by default
+    this.rightSide.classList.add('right');
+  }
+
+  changeState() {
+    const { isLogginActive } = this.state;
+
+    if (isLogginActive) {
+      this.rightSide.classList.remove('right');
+      this.rightSide.classList.add('left');
+    } else {
+      this.rightSide.classList.remove('left');
+      this.rightSide.classList.add('right');
+    }
+    this.setState(prevState => ({ isLogginActive: !prevState.isLogginActive }));
   }
 
   render() {
-    const { username } = this.state;
+    const { isLogginActive } = this.state;
+    const current = isLogginActive ? 'Register' : 'Login';
+    const currentActive = isLogginActive ? 'login' : 'register';
     return (
-      <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
+      <div className="app_2">
+        <div className="login">
+          <div className="container" ref={ref => (this.container = ref)}>
+            {/* {isLogginActive && (
+              <Login containerRef={ref => (this.current = ref)} />
+            )}
+            {!isLogginActive && (
+              <Register containerRef={ref => (this.current = ref)} />
+            )} */}
+          </div>
+          <RightSide
+            current={current}
+            currentActive={currentActive}
+            containerRef={ref => (this.rightSide = ref)}
+            onClick={this.changeState.bind(this)}
+          />
+        </div>
       </div>
     );
   }
 }
+
+const RightSide = props => (
+  <div
+    className="right-side"
+    ref={props.containerRef}
+    onClick={props.onClick}
+  >
+    <div className="inner-container">
+      <div className="text">{props.current}</div>
+    </div>
+  </div>
+);
+
+export default App;
