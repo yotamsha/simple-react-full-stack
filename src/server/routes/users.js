@@ -108,5 +108,20 @@ router.get('/currentUser', (req, res) => {
 
 });
 
+router.put('/:id', (req, res, next) => {
+  console.log('updating user')
+  User.findByIdAndUpdate(req.params.id, req.body, {}, (err, model) => {
+    if (!err) {
+      res.status(201).json({
+          data: model
+      });
+  } else {
+      res.status(500).json({
+          message: "Fail to update user model"
+      })
+  }
+  })
+
+});
 
 module.exports = router;
